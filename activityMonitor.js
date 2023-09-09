@@ -2,29 +2,43 @@ const os = require("os");
 const childProcess = require("child_process");
 const fs = require("fs");
 
-const execProcess = (command) => {
+let count = 0;
+let content = "";
+let command = "ps -A -o %cpu,%mem,comm | sort -nr | head -n 1";
+let interval;
+
+if (os.platform() === "win32") {
+  command = `powershell "Get-Process | Sort-Object CPU -Descending | Select-Object -Property Name, CPU, WorkingSet -First 1 | ForEach-Object { $_.Name + ' ' + $_.CPU + ' ' + $_.WorkingSet }"`;
+}
+
+function execProcess(command, callbackFn) {
   childProcess.exec(command, (error, stdout, stderr) => {
-    const op = stdout.split("\r\n");
-    for (let item of op) {
-      if (item) {
-        console.log(item);
-        const fileContent = `\n<${unixTimestamp()}>: ${item}`;
-        fs.appendFile("activityMonitor.log", fileContent, (error) => {
-          console.clear();
-        });
-      }
-    }
+    callbackFn(error, stdout);
   });
-};
+}
 
 function unixTimestamp() {
   return Math.floor(Date.now() / 1000);
 }
 
-if (os.platform() === "win32") {
-  execProcess(
-    `powershell "Get-Process | Sort-Object CPU -Descending | Select-Object -Property Name, CPU, WorkingSet | ForEach-Object { $_.Name + ' ' + $_.CPU + ' ' + $_.WorkingSet }"`
-  );
-} else if (os.platform() === "linux") {
-  execProcess("ps -A -o %cpu,%mem,comm | sort -nr | head");
+function monitorLog(error, response) {
+  if (!error) {
+    count++;
+    const timestamp = unixTimestamp();
+    content += `\n${timestamp} : ${response}`;
+    if (count % 600 === 0) {
+      fs.appendFile("activityMonitor.log", content, (e) => {
+        if (e) {
+          clearInterval(interval);
+        }
+      });
+      content = "";
+    }
+    console.clear();
+    console.log(response);
+  }
 }
+
+interval = setInterval(() => {
+  execProcess(command, monitorLog);
+}, 100);
