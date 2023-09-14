@@ -63,30 +63,4 @@ class CustomEmitter {
   }
 }
 
-const event1 = new CustomEmitter();
-
-function func1() {
-  console.log("Function 1");
-}
-function func2() {
-  console.log("Function 2");
-}
-
-function func3() {
-  console.log("Function 3");
-}
-
-event1.on("myEvent", func1);
-event1.on("myEvent", func2);
-event1.once("myEvent", func3);
-
-console.log(event1.rawListeners("myEvent"));
-
-event1.emit("myEvent");
-// event1.off("myEvent", func1);
-// event1.off("myEvent", func2);
-event1.emit("myEvent");
-// event1.emit("myEvent");
-// event1.emit("myEvent");
-// event1.emit("myEvent");
-// event1.emit("myEvent");
+module.exports = CustomEmitter;
