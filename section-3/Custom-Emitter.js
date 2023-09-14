@@ -1,42 +1,35 @@
 class CustomEmitter {
   constructor() {
     this.listeners = {};
-    /*
-      {
-        event1: [
-          () => {},
-          () => {},
-
-        ]
-      }
-    */
   }
-  addEventListener(type, listenFn) {
+  addListener(type, listenFn) {
     if (typeof listenFn !== "function") {
       throw new Error("Listener should be function");
     }
 
     this.listeners[type] = this.listeners[type] || [];
 
-    this.listeners[type].push(listenFn);
+    this.listeners[type].push({ listener: listenFn, once: false });
   }
 
   on(type, listenFn) {
-    this.addEventListener(type, listenFn);
+    this.addListener(type, listenFn);
   }
 
   emit(type, ...args) {
     if (this.listeners[type]) {
-      this.listeners[type].forEach((listener) => {
-        listener(...args);
+      this.listeners[type].forEach((listn) => {
+        listn.listener(...args);
       });
+
+      this.listeners[type] = this.listeners[type].filter((l) => !l.once);
     }
   }
 
-  off(type, listenFn) {
+  removeListener(type, listenFn) {
     if (this.listeners[type]) {
       const index = this.listeners[type].findIndex(
-        (fn) => fn.name === listenFn.name
+        (fn) => fn.listener.name === listenFn.name
       );
 
       if (index > -1) {
@@ -45,18 +38,28 @@ class CustomEmitter {
     }
   }
 
+  off(type, listenFn) {
+    this.removeListener(type, listenFn);
+  }
+
   listenerCount(type) {
     const eventListeners = this.listeners[type] || [];
     return eventListeners.length;
   }
 
   rawListeners(type) {
-    return this.listeners[type] || [];
+    const listns = this.listeners[type] || [];
+    return listns.map((l) => l.listener);
   }
 
-  //:TO-DO
   once(type, fn) {
-    this.on(type, fn);
+    if (typeof fn !== "function") {
+      throw new Error("Listener should be function");
+    }
+
+    this.listeners[type] = this.listeners[type] || [];
+
+    this.listeners[type].push({ listener: fn, once: true });
   }
 }
 
@@ -69,15 +72,20 @@ function func2() {
   console.log("Function 2");
 }
 
+function func3() {
+  console.log("Function 3");
+}
+
 event1.on("myEvent", func1);
 event1.on("myEvent", func2);
+event1.once("myEvent", func3);
 
 console.log(event1.rawListeners("myEvent"));
 
-// event1.emit("myEvent");
+event1.emit("myEvent");
 // event1.off("myEvent", func1);
 // event1.off("myEvent", func2);
-// event1.emit("myEvent");
+event1.emit("myEvent");
 // event1.emit("myEvent");
 // event1.emit("myEvent");
 // event1.emit("myEvent");
