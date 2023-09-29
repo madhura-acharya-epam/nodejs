@@ -1,0 +1,100 @@
+{
+	"info": {
+		"_postman_id": "5e93f213-8b94-4756-a10c-bc55b11f1063",
+		"name": "Network-Task",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "30158279"
+	},
+	"item": [
+		{
+			"name": "Get all Users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/users"
+			},
+			"response": []
+		},
+		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"Madhura\" \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/users"
+			},
+			"response": []
+		},
+		{
+			"name": "Partial Update the User",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Anna\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/users/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Hobbies By user id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/users/hobbies/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Create New Hobby by user id",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"hobby\": \"test\" \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/users/hobbies/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete hobby By user id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"hobby\": \"test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/users/hobbies/1"
+			},
+			"response": []
+		}
+	]
+}
