@@ -7,7 +7,8 @@
     "test": "jest",
     "start": "nodemon app.js",
     "task2": "nodemon ./section-3/index.js",
-    "task3": "nodemon ./section-3/read-csv.js"
+    "task3": "nodemon ./section-3/read-csv.js",
+    "task5": "nodemon ./Networks/index.js"
   },
   "author": "",
   "license": "ISC",
